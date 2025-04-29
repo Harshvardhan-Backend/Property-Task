@@ -1,61 +1,252 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# REAL-ESTATE-API
 
-## About Laravel
+# Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This is an API for a Real Estate application built using Laravel.
+The API allows users to:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- List properties
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- View individual properties
 
-## Learning Laravel
+- Create new properties
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- List agents
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- View individual agents
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Setup Instructions
 
-## Laravel Sponsors
+1. Clone the repository
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+ git clone https://github.com/Harshvardhan-Backend/Real_Estate_Api.git
+cd Real_Estate_Api
 
-### Premium Partners
+```
+2. Install Dependencies
+```bash
+composer install
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+```
+3. Create a New Laravel Project
 
-## Contributing
+Open terminal or command prompt and run:
+```bash
+laravel new real-estate-api
+```
+Go into your Project folder:
+```bash
+cd real-estate-api
+```
+4. Configure Environment Variables
+- Copy `.env.example .env` to `env`
+```bash
+cp .env.example .env
+```
+- Set your database configuration inside `.env`:
+```ini
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=your_database_name
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
+4. Generate application key
+```bash
+php artisan key:generate
+```
+5. Create Database migrations
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Create models and migrations for Agent and Property:
+```bash
+php artisan make:model Agent -m
+php artisan make:model Property -m
+```
+This creates:
 
-## Code of Conduct
+- app/Models/Agent.php
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- database/migrations/xxxx_create_agents_table.php
 
-## Security Vulnerabilities
+- app/Models/Property.php
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- database/migrations/xxxx_create_properties_table.php
 
-## License
+Now edit the migrations:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- agents fields:
+    - name (string)
+    - email (string)
+    - phone (string)
+
+- Property fields:
+    - address (string)
+    - price (decimal)
+    - description (text)
+    - image_urls (json or text, e.g., comma-separated URLs)
+    - agent_id (foreign key referencing agents.id)
+
+# Define Relationships
+This project uses Laravel Eloquent relationships to connect Agents and Properties.
+
+- An Agent has many Properties
+
+- A Property belongs to an Agent
+
+## Relationship Summary
+
+| Source Model | Relationship | Target Model | Description |
+|:---|:---|:---|:---|
+| Agent | hasMany | Property | An agent can have many properties |
+| Property | belongsTo | Agent | A property belongs to one agent |
+
+
+# Run database migrations and seeders
+```bash
+php artisan migrate
+php artisan migrate --seed
+```
+
+
+
+
+# API Endpoints
+All API responses are formatted using Laravel API Resources.
+
+## Properties
+- GET `/api/properties`
+
+    - List all properties with pagination (10 per page)
+
+    - Query parameters:
+
+        - `sort=price_asc` — Sort by price ascending
+
+        - `sort=price_desc` — Sort by price descending
+
+        - `agent_id={id}` — Filter properties by agent ID
+
+- GET `/api/properties/{id}`
+
+    - View a single property
+
+    - Returns 404 if not found
+
+- POST `/api/properties`
+
+    - Create a new property
+
+    - Required fields:
+
+        - `address` (string, required)
+
+        - `price` (decimal, required)
+
+        - `agent_id` (integer, must exist)
+
+    - Optional fields:
+
+        - `description` (text)
+
+        - `image_urls` (json or comma-separated string)
+
+## Agents
+- GET `/api/agents`
+
+    - List all agents with pagination (10 per page)
+
+- GET `/api/agents/{id}`
+
+    - View a single agent
+
+    - Returns 404 if not found
+
+
+# Testing the API
+You can test the endpoints using:
+
+- Postman
+
+- cURL
+
+## Testing with Postman
+You can easily test the API endpoints using Postman by following these steps:
+
+1. Open Postman and click on New > Request.
+
+2. Set the request type to:
+
+- `GET`, `POST`, etc., depending on the endpoint.
+
+3. Enter the request URL:
+```bash
+http://localhost:8000/api/{endpoint}
+```
+Example:
+```bash
+http://localhost:8000/api/properties
+```
+4. For POST requests:
+
+- Go to the Body tab.
+
+- Select raw and choose JSON format.
+
+- Provide the request body.
+
+- Example JSON for creating a property:
+```json
+{
+  "address": "456 Oak Street",
+  "price": 350000,
+  "description": "A beautiful family home",
+  "image_urls": "[\"https://example.com/image1.jpg\", \"https://example.com/image2.jpg\"]",
+  "agent_id": 1
+}
+```
+5. Send the request and inspect the response!
+
+| Method | URL | Description |
+| :--- | :--- | :--- |
+| GET | /api/properties | List all properties |
+| GET | /api/properties/{id} | View a single property |
+| POST | /api/properties | Create a new property |
+| GET | /api/agents | List all agents |
+| GET | /api/agents/{id} | View a single agent |
+
+**Important**
+
+Make sure your Laravel server is running (`php artisan serve`) and your database is seeded (`php artisan migrate --seed`) before testing.
+
+# Validation and Error Handling
+- Validation errors: return HTTP 422 Unprocessable Entity
+
+- Resource not found: return HTTP 404 Not Found
+
+- Proper error messages are provided for failed operations.
+
+# SUMMARY
+
+This Real Estate API project provides a backend system for managing properties and agents for a real estate application.
+
+It allows users to:
+
+- View a list of available properties.
+
+- View details of a specific property.
+
+- Filter properties by agent and sort them by price.
+
+- Create new property listings with validation checks.
+
+- View a list of agents.
+
+- View details of individual agents.
+
+The API is built using Laravel and uses a PostgreSQL database to store information about properties and agents.
+It supports pagination, input validation, error handling (404 for not found, 422 for invalid input), and returns clean JSON responses using API Resources.
+
+This API can be connected easily to any frontend or mobile application to build a complete real estate platform.
