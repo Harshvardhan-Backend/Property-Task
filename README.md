@@ -167,6 +167,18 @@ http://localhost:8000/api/{endpoint}
 
 Make sure your Laravel server is running (`php artisan serve`) and your database is seeded (`php artisan migrate --seed`) before testing.
 
+# Web Form Interface (Blade Views)
+
+In addition to API access, this application provides frontend forms using Laravel Blade templates for adding Agents and Properties.
+
+| Route               | Method | Purpose                         |
+|---------------------|--------|---------------------------------|
+| `/create-agent`     | GET    | Show form to create an agent    |
+| `/create-agent`     | POST   | Submit and store a new agent    |
+| `/create-property`  | GET    | Show form to create a property  |
+| `/create-property`  | POST   | Submit and store a new property |
+
+
 # Validation and Error Handling
 - Validation errors: return HTTP 422 Unprocessable Entity
 
