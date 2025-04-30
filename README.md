@@ -145,6 +145,8 @@ http://localhost:8000/api/{endpoint}
 ```
 4. For POST requests:
 
+- Go to the header tab in key type `accept` and in value type `application/json`
+
 - Go to the Body tab.
 
 - Select raw and choose JSON format.
