@@ -4,26 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Agent;
 use Illuminate\Http\Request;
-use App\Http\Resources\AgentResource;
 
 class AgentController extends Controller
 {
-    /**
-     * List all agents with pagination (10 per page)
-     */
+    // GET /api/agents
     public function index()
     {
-        $agents = Agent::paginate(10); // Paginate 10 agents per page
+        $agents = Agent::paginate(10);
 
-        return AgentResource::collection($agents);
+        return response()->json([
+            'message' => 'Agents fetched successfully',
+            'data' => $agents
+        ]);
+    }
+    public function create()
+    {
+        return view('create-agent');
     }
 
-    /**
-     * Show a single agent by ID
-     */
+    // GET /api/agents/{id}
     public function show($id)
     {
-        $agent = Agent::find($id);
+        $agent = Agent::with('properties')->find($id);
 
         if (!$agent) {
             return response()->json([
@@ -31,6 +33,28 @@ class AgentController extends Controller
             ], 404);
         }
 
-        return new AgentResource($agent);
+        return response()->json([
+            'message' => 'Agent fetched successfully',
+            'data' => $agent
+        ]);
+    }
+
+    // POST /api/agents
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|unique:agents,email',
+            'phone' => 'required|string|max:20'
+        ]);
+
+        $agent = Agent::create($validated);
+        if($request->wantsJson()){
+        return response()->json([
+            'message' => 'Agent created successfully',
+            'data' => $agent
+        ], 201);
+    }
+    return redirect()->back()->with('success', 'Agent created successfully!');
     }
 }

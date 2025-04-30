@@ -16,3 +16,5 @@ Route::post('/properties', [PropertyController::class, 'store']);
 Route::get('/agents', [AgentController::class, 'index']);
 
 Route::get('/agents/{id}', [AgentController::class, 'show']);
+
+Route::post('/agents', [AgentController::class, 'store']);

@@ -15,6 +15,12 @@ The API allows users to:
 - List agents
 
 - View individual agents
+# Relationships
+
+| Source Model | Relationship | Target Model | Description |
+|:---|:---|:---|:---|
+| Agent | hasMany | Property | An agent can have many properties |
+| Property | belongsTo | Agent | A property belongs to one agent |
 
 # Setup Instructions
 
@@ -30,17 +36,7 @@ cd Real_Estate_Api
 composer install
 
 ```
-3. Create a New Laravel Project
-
-Open terminal or command prompt and run:
-```bash
-laravel new real-estate-api
-```
-Go into your Project folder:
-```bash
-cd real-estate-api
-```
-4. Configure Environment Variables
+3 Configure Environment Variables
 - Copy `.env.example .env` to `env`
 ```bash
 cp .env.example .env
@@ -65,44 +61,6 @@ Create models and migrations for Agent and Property:
 php artisan make:model Agent -m
 php artisan make:model Property -m
 ```
-This creates:
-
-- app/Models/Agent.php
-
-- database/migrations/xxxx_create_agents_table.php
-
-- app/Models/Property.php
-
-- database/migrations/xxxx_create_properties_table.php
-
-Now edit the migrations:
-
-- agents fields:
-    - name (string)
-    - email (string)
-    - phone (string)
-
-- Property fields:
-    - address (string)
-    - price (decimal)
-    - description (text)
-    - image_urls (json or text, e.g., comma-separated URLs)
-    - agent_id (foreign key referencing agents.id)
-
-# Define Relationships
-This project uses Laravel Eloquent relationships to connect Agents and Properties.
-
-- An Agent has many Properties
-
-- A Property belongs to an Agent
-
-## Relationship Summary
-
-| Source Model | Relationship | Target Model | Description |
-|:---|:---|:---|:---|
-| Agent | hasMany | Property | An agent can have many properties |
-| Property | belongsTo | Agent | A property belongs to one agent |
-
 
 # Run database migrations and seeders
 ```bash
@@ -185,10 +143,6 @@ You can easily test the API endpoints using Postman by following these steps:
 ```bash
 http://localhost:8000/api/{endpoint}
 ```
-Example:
-```bash
-http://localhost:8000/api/properties
-```
 4. For POST requests:
 
 - Go to the Body tab.
@@ -197,16 +151,6 @@ http://localhost:8000/api/properties
 
 - Provide the request body.
 
-- Example JSON for creating a property:
-```json
-{
-  "address": "456 Oak Street",
-  "price": 350000,
-  "description": "A beautiful family home",
-  "image_urls": "[\"https://example.com/image1.jpg\", \"https://example.com/image2.jpg\"]",
-  "agent_id": 1
-}
-```
 5. Send the request and inspect the response!
 
 | Method | URL | Description |

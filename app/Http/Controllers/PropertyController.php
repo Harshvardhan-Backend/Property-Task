@@ -1,13 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Agent;
 use App\Models\Property;
 use Illuminate\Http\Request;
 use App\Http\Resources\PropertyResource;
 
 class PropertyController extends Controller
 {
+    public function create()
+    {
+        $agents = Agent::all(); // For dropdown in form
+        return view('create-property', compact('agents'));
+    }
     // List all properties with pagination, sorting, filtering
     public function index(Request $request)
     {
@@ -56,6 +61,14 @@ class PropertyController extends Controller
 
         $property = Property::create($validated);
 
-        return new PropertyResource($property);
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Property created successfully',
+                'data' => $property
+            ], 201);
+        }
+
+        // If request is from Blade form
+        return redirect()->back()->with('success', 'Property created successfully!');
     }
 }

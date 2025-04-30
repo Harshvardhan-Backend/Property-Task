@@ -9,6 +9,9 @@ class Agent extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'email', 'phone'];
+
+    // One Agent has many Properties
     public function properties()
     {
         return $this->hasMany(Property::class);
